@@ -9,7 +9,7 @@
             "type":"image/png"
         }
     ],
-    "start_url":"/pwa-fridge",
+    "start_url":"/pwa-fridge/",
     "display":"standalone",
     "background_color":"#fff",
     "theme_color":"#3f51b5"
