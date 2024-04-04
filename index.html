@@ -9,7 +9,13 @@
 </head>
 <body>
     <h1>Expiration Dates in My Fridge</h1>
-    <p></p>
+    <form id="productForm">
+        <input type="text" id="barcode" placeholder="Barcode" required>
+        <input type="text" id="productName" placeholder="Product Name" required>
+        <input type="date" id="expirationDate" required>
+        <button type="submit">Add</button>
+    </form>
+    <ul id="productList"></ul>
     <script src="main.js"></script>
 </body>
 </html>
