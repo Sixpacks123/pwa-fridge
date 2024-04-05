@@ -1,4 +1,4 @@
-const cacheName = 'my-fridge-v6';
+const cacheName = 'my-fridge-v7';
 const filesToCache = [
   '/index.html',
   '/css/styles.css',
