@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Service Worker Registration
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').then(function(registration) {
             console.log('Service Worker Registered', registration);
@@ -6,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Service Worker Failed to Register', err);
         });
     }
+
+    // Notification Permission Request
     if ('Notification' in window) {
         Notification.requestPermission().then(permission => {
             if (permission === "granted") {
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Form Submission Handling
     document.getElementById('productForm').addEventListener('submit', function(event) {
         event.preventDefault();
         const name = document.getElementById('productName').value;
@@ -27,15 +31,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function notifyUser(message) {
     if (Notification.permission === "granted") {
-        navigator.serviceWorker.ready.then(registration => {
-            const options = {
-                body: 'Check your fridge! ' + message,
+        navigator.serviceWorker.ready.then(function(registration) {
+            registration.showNotification("Food Expiry Alert", {
+                body: message,
                 icon: '/icons/frigo-64.png',
-                badge: '/icons/frigo-64.png',
-                vibrate: [200, 100, 200],
-                tag: 'expiry-notification'  // Tag to stack notifications or replace old ones with the same tag
-            };
-            registration.showNotification('Food Expiry Alert', options);
+                badge: '/icons/frigo-64.png'
+            });
         });
     }
+}
+
+function addProduct(name, date) {
+    addProductToDB(name, date).then(() => {
+        console.log('Product added to local database');
+        notifyUser(`${name} will be synced and checked for expiration.`);
+    });
 }
