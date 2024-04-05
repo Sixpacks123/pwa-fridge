@@ -1,4 +1,4 @@
-const cacheName = 'my-fridge-v5';
+const cacheName = 'my-fridge-v6';
 const urlsToCache = [
   '/index.html',
   '/css/styles.css',
@@ -34,5 +34,13 @@ self.addEventListener("fetch", (e) => {
 
         return response;
     })())
+});
+
+self.addEventListener('periodicsync', function(e) {
+    if(e.tag === 'content-sync') {
+        e.waitUntil(
+            syncContent().then(()=>self.registration.showNotification('Content Synced!')
+        ))
+    }
 });
 

@@ -19,6 +19,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    navigator.serviceWorker.ready.then(function(registration) {
+        if ('periodicSync' in registration) {
+            try {
+                registration.periodicSync.register('content-sync', {
+                    minInterval: 60 * 1000,
+                });
+            } catch (error) {
+                console.error(`Periodic Sync could not be registered!`, error);
+            }
+        }
+    });
     // Form Submission Handling
     document.getElementById('productForm').addEventListener('submit', function(event) {
         event.preventDefault();
