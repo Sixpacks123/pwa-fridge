@@ -30,32 +30,66 @@ function addProductToDB(name, date) {
 function displayProducts() {
     let now = new Date();
     let objectStore = db.transaction('products').objectStore('products');
-    document.getElementById('productList').innerHTML = '';
-    
+
+    // Clear existing content
+    const productList = document.getElementById('productList');
+    productList.innerHTML = '';
+
+    // Create table and header row
+    const table = document.createElement('table');
+    const headerRow = document.createElement('tr');
+    const headers = ["Product Name", "Expiration Date", "Status"];
+    headers.forEach(headerText => {
+        const header = document.createElement('th');
+        header.textContent = headerText;
+        headerRow.appendChild(header);
+    });
+    table.appendChild(headerRow);
+
+    // Add table to the DOM
+    productList.appendChild(table);
+
+    // Process each product
     objectStore.openCursor().onsuccess = function(event) {
         let cursor = event.target.result;
         if (cursor) {
             const { name, expirationDate } = cursor.value;
-            displayProductItem(name, expirationDate, now);
+            displayProductItem(table, name, expirationDate, now);
             cursor.continue();
         }
     };
 }
 
-function displayProductItem(name, expirationDate, now) {
+function displayProductItem(table, name, expirationDate, now) {
     const expDate = new Date(expirationDate);
-    const listItem = document.createElement('li');
-    listItem.textContent = `Product: ${name}, Expiration Date: ${expirationDate}`;
-    document.getElementById('productList').appendChild(listItem);
-
+    const row = document.createElement('tr');
     const daysToExpire = (expDate - now) / (1000 * 3600 * 24);
+    let status = "Valid";
+
+    // Create cells for name, expiration date, and status
+    const nameCell = document.createElement('td');
+    nameCell.textContent = name;
+    const dateCell = document.createElement('td');
+    dateCell.textContent = expirationDate;
+
+    const statusCell = document.createElement('td');
     if (daysToExpire < 0) {
-        listItem.style.color = 'red';
+        statusCell.textContent = "Expired";
+        statusCell.style.color = 'red';
         notifyUser(`${name} has expired!`);
     } else if (daysToExpire <= 3) {
-        listItem.style.color = 'orange';
+        statusCell.textContent = "Expiring Soon";
+        statusCell.style.color = 'orange';
         notifyUser(`${name} will expire soon!`);
     } else {
-        listItem.style.color = 'black';
+        statusCell.textContent = "Valid";
     }
+
+    // Append cells to the row
+    row.appendChild(nameCell);
+    row.appendChild(dateCell);
+    row.appendChild(statusCell);
+
+    // Append row to the table
+    table.appendChild(row);
 }
