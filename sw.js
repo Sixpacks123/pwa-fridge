@@ -1,5 +1,5 @@
 const cacheName = 'my-fridge-v6';
-const urlsToCache = [
+const filesToCache = [
   '/index.html',
   '/css/styles.css',
   '/js/main.js',
