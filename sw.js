@@ -5,6 +5,7 @@ const urlsToCache = [
   '/js/main.js',
   '/js/db.js',
   '/icons/frigo-64.png',
+  '/icons/frigo-512x512.png',
 ];
 self.addEventListener("insall", (e) => {
     console.log("[SW] install");
