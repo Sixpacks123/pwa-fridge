@@ -1,8 +1,9 @@
-const CACHE_NAME = 'my-fridge-v1';
+const cacheName = 'my-fridge-v3';
 const urlsToCache = [
   '/index.html',
-  '/styles.css',
-  '/main.js',
+  '/css/styles.css',
+  'js/main.js',
+  'js/db.js',
 ];
 self.addEventListener("insall", (e) => {
     console.log("[SW] install");
