@@ -7,6 +7,11 @@
             "src":"https://sixpacks123.github.io/pwa-fridge/icons/frigo-64.png",
             "sizes":"64x64",
             "type":"image/png"
+        },
+        {
+            "src":"https://sixpacks123.github.io/pwa-fridge/icons/frigo-512x512.png",
+            "sizes":"512x512",
+            "type":"image/png"
         }
     ],
     "start_url":"/pwa-fridge/",
