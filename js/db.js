@@ -33,48 +33,31 @@ function addProduct(name, date) {
 }
 
 function displayProducts() {
-    let now = new Date();
+    const now = new Date();
     let objectStore = db.transaction('products').objectStore('products');
-    document.getElementById('productList').innerHTML = '';
-
+    document.getElementById('productList').innerHTML = '';  
     objectStore.openCursor().onsuccess = function(event) {
         let cursor = event.target.result;
         if (cursor) {
             const { name, expirationDate } = cursor.value;
+            const expDate = new Date(expirationDate);
             const listItem = document.createElement('li');
-            let expDate = new Date(expirationDate);
-            listItem.innerHTML = `Product: ${name}, Expiration Date: ${expirationDate}`;
+            listItem.textContent = `Product: ${name}, Expiration Date: ${expirationDate}`;
             document.getElementById('productList').appendChild(listItem);
 
-            // Check for expiration and near expiration
-            let daysToExpire = (expDate - now) / (1000 * 3600 * 24);
+            const timeDiff = expDate.getTime() - now.getTime();
+            const daysToExpire = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
             if (daysToExpire < 0) {
                 notifyUser(`${name} has expired!`);
-            } else if (daysToExpire < 3) {
-                notifyUser(`${name} will expire soon!`);
+            } else if (daysToExpire <= 3) {
+                notifyUser(`${name} will expire in ${daysToExpire} day(s)!`);
             }
 
             cursor.continue();
+        } else {
+            console.log('No more products to display.');
         }
     };
 }
 
-
-function notifyUser(message) {
-    if (!("Notification" in window)) {
-        console.log("This browser does not support notifications.");
-        return;
-    }
-
-    if (Notification.permission === "granted") {
-        new Notification(message);
-    }
-
-    else if (Notification.permission !== 'denied' || Notification.permission === "default") {
-        Notification.requestPermission().then(function (permission) {
-            if (permission === "granted") {
-                new Notification(message);
-            }
-        });
-    }
-}
