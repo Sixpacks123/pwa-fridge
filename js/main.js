@@ -45,8 +45,8 @@ function notifyUser(message) {
         navigator.serviceWorker.ready.then(function(registration) {
             registration.showNotification("Food Expiry Alert", {
                 body: message,
-                icon: '/icons/frigo-64.png',
-                badge: '/icons/frigo-64.png'
+                icon: '/pwa-fridge/icons/frigo-64.png',
+                badge: '/pwa-fridge/icons/frigo-64.png'
             });
         });
     }
