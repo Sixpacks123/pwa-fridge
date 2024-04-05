@@ -2,8 +2,9 @@ const cacheName = 'my-fridge-v5';
 const urlsToCache = [
   '/index.html',
   '/css/styles.css',
-  'js/main.js',
-  'js/db.js',
+  '/js/main.js',
+  '/js/db.js',
+  '/icons/frigo-64.png',
 ];
 self.addEventListener("insall", (e) => {
     console.log("[SW] install");
