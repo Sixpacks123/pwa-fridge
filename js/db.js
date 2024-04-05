@@ -50,8 +50,12 @@ function displayProductItem(name, expirationDate, now) {
 
     const daysToExpire = (expDate - now) / (1000 * 3600 * 24);
     if (daysToExpire < 0) {
+        listItem.style.color = 'red';
         notifyUser(`${name} has expired!`);
     } else if (daysToExpire <= 3) {
+        listItem.style.color = 'orange';
         notifyUser(`${name} will expire soon!`);
+    } else {
+        listItem.style.color = 'black';
     }
 }
