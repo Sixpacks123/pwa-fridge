@@ -7,7 +7,7 @@ const urlsToCache = [
   '/icons/frigo-64.png',
   '/icons/frigo-512x512.png',
 ];
-self.addEventListener("insall", (e) => {
+self.addEventListener("install", (e) => {
     console.log("[SW] install");
     e.waitUntil((async () => {
         const cache = await caches.open(cacheName);
