@@ -17,31 +17,58 @@ self.addEventListener("insall", (e) => {
     })());
 });
 
-
-self.addEventListener("fetch", (e) => {
-    console.log("[SW] Fetching url: ", e.request.url);
-    e.respondWith((async () => {
-
-        const match = await caches.match(e.request);
-        if (match) return match;
-
-        const response = await fetch(e.request);
-
-        if (e.request.method === "GET" && !(e.request.headers.get("Cache-Control") === "no-cache" || e.request.headers.get("Cache-Control") === "no-store")) {
-            const cache = await caches.open(cacheName);
-            console.log("[SW] Caching new resource: ", e.request.url);
-            cache.put(e.request, response.clone());
-        }
-
-        return response;
-    })())
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.filter((cache) => cache !== cacheName)
+                    .map(cache => caches.delete(cache))
+            );
+        })
+    );
 });
 
-self.addEventListener('periodicsync', function(e) {
-    if(e.tag === 'content-sync') {
-        e.waitUntil(
-            syncContent().then(()=>self.registration.showNotification('Content Synced!')
-        ))
+self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                return response || fetch(event.request).then((response) => {
+                    let responseClone = response.clone();
+                    caches.open(cacheName).then((cache) => {
+                        cache.put(event.request, responseClone);
+                    });
+                    return response;
+                });
+            })
+    );
+});
+
+self.addEventListener('periodicsync', event => {
+    if (event.tag === 'check-expiration') {
+        event.waitUntil(checkForExpiringProducts());
     }
 });
 
+async function checkForExpiringProducts() {
+    // Assuming openDatabase is a function that opens IndexedDB
+    const db = await openDatabase();
+    const now = new Date();
+    const tx = db.transaction('products', 'readonly');
+    const store = tx.objectStore('products');
+    const index = store.index('expirationDate');
+
+    return index.openCursor().then(function cursorIterate(cursor) {
+        if (!cursor) return;
+        const { name, expirationDate } = cursor.value;
+        const expDate = new Date(expirationDate);
+        const daysToExpire = (expDate - now) / (1000 * 3600 * 24);
+
+        if (daysToExpire < 1) {
+            self.registration.showNotification("Product Expiring Soon", {
+                body: `${name} expires within 24 hours.`,
+                icon: '/icons/frigo-64.png'
+            });
+        }
+        return cursor.continue().then(cursorIterate);
+    });
+}
