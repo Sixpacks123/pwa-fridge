@@ -1,27 +1,31 @@
-const cacheName = 'my-fridge-v8';
+const cacheName = 'my-fridge-v9';
 const filesToCache = [
-  '/index.html',
-  '/css/styles.css',
-  '/js/main.js',
-  '/js/db.js',
-  '/icons/frigo-64.png',
-  '/icons/frigo-512x512.png',
+    '/index.html',
+    '/css/styles.css',
+    '/js/main.js',
+    '/js/db.js',
+    '/icons/frigo-64.png',
+    '/icons/frigo-512x512.png',
 ];
 
-self.addEventListener("insall", (e) => {
-    console.log("[SW] install");
-    e.waitUntil((async () => {
-        const cache = await caches.open(cacheName);
-        console.log("[SW] Caching files");
-        await cache.addAll(filesToCache);
-    })());
+self.addEventListener("install", (event) => {
+    console.log("[SW] Install");
+    event.waitUntil(
+        caches.open(cacheName).then((cache) => {
+            console.log("[SW] Caching files");
+            return cache.addAll(filesToCache);
+        }).catch(error => {
+            console.error("[SW] Failed to open cache", error);
+        })
+    );
 });
 
 self.addEventListener("activate", (event) => {
+    console.log("[SW] Activate");
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
+        caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheNames.filter((cache) => cache !== cacheName)
+                cacheNames.filter(cache => cache !== cacheName)
                     .map(cache => caches.delete(cache))
             );
         })
@@ -29,55 +33,44 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+    console.log("[SW] Fetching:", event.request.url);
     event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                return response || fetch(event.request).then((response) => {
-                    let responseClone = response.clone();
-                    caches.open(cacheName).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
-                    return response;
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request).then(response => {
+                let responseClone = response.clone();
+                caches.open(cacheName).then(cache => {
+                    cache.put(event.request, responseClone);
                 });
-            })
+                return response;
+            });
+        })
     );
 });
 
-
-if (periodicSyncPermission.state == 'granted') {
-     registration.periodicSync.register('check-expiration', {
-        minInterval: 24 * 60 * 60 * 1000
-    });
-}
-
-
 self.addEventListener('periodicsync', event => {
     if (event.tag === 'check-expiration') {
+        console.log("[SW] Periodic Sync for Expiration Checks");
         event.waitUntil(checkForExpiringProducts());
     }
 });
 
-
 self.addEventListener('push', event => {
-    const data = event.data.json(); // Expecting data to be JSON
-    console.log('[SW] Push Received.');
-    console.log(`[SW] Push had this data: "${data.body}"`);
-
-    const title = data.title || 'Push';
+    const data = event.data.json();
+    console.log('[SW] Push Received:', data);
+    const title = data.title || 'Push Notification';
     const options = {
         body: data.body,
         icon: 'icons/icon-192x192.png',
         badge: 'icons/badge.png'
     };
-
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', event => {
-    console.log('[SW] Notification click Received.');
-
+    console.log('[SW] Notification click Received:', event.notification);
     event.notification.close();
-
+    // Example: navigate to a specific page
+    event.waitUntil(clients.openWindow('/'));
 });
 
 async function checkForExpiringProducts() {
