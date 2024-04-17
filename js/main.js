@@ -38,7 +38,8 @@ async function setupPeriodicSync(registration) {
     if ('periodicSync' in registration) {
         try {
             await registration.periodicSync.register('check-expiration', {
-                minInterval: 24 * 60 * 60 * 1000, // 24 hours
+                // 1 minute minimum interval
+                minInterval: 60 * 1000,
             });
             console.log('Periodic Sync registered for product expiration checks');
         } catch (error) {
