@@ -40,21 +40,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function notifyUser(message) {
-    if (Notification.permission === "granted") {
-        navigator.serviceWorker.ready.then(function(registration) {
-            registration.showNotification("Food Expiry Alert", {
-                body: message,
-                icon: '/pwa-fridge/icons/frigo-64.png',
-                badge: '/pwa-fridge/icons/frigo-64.png'
-            });
-        });
-    }
-}
 
 function addProduct(name, date) {
     addProductToDB(name, date).then(() => {
         console.log('Product added to local database');
         notifyUser(`${name} will be synced and checked for expiration.`);
     });
+}
+
+async function setupPeriodicSync(registration) {
+    if ('periodicSync' in registration) {
+        try {
+            await registration.periodicSync.register('check-expiration', {
+                minInterval: 24 * 60 * 60 * 1000, // 24 hours
+            });
+            console.log('Periodic Sync registered for product expiration checks');
+        } catch (error) {
+            console.error('Periodic Sync could not be registered!', error);
+        }
+    }
 }
