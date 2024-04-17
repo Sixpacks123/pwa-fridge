@@ -1,21 +1,24 @@
 {
-    "name":"My Fridge",
-    "short_name":"My Fridge",
-    "description":"A simple fridge app",
-    "icons":[
-        {
-            "src":"https://sixpacks123.github.io/pwa-fridge/icons/frigo-64.png",
-            "sizes":"64x64",
-            "type":"image/png"
-        },
-        {
-            "src":"https://sixpacks123.github.io/pwa-fridge/icons/frigo-512x512.png",
-            "sizes":"512x512",
-            "type":"image/png"
-        }
-    ],
-    "start_url":"/pwa-fridge/",
-    "display":"standalone",
-    "background_color":"#fff",
-    "theme_color":"#3f51b5"
+  "name": "My Fridge",
+  "short_name": "My Fridge",
+  "description": "A simple fridge app",
+  "icons": [
+    {
+      "src": "https://sixpacks123.github.io/pwa-fridge/icons/frigo-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "https://sixpacks123.github.io/pwa-fridge/icons/frigo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/pwa-fridge/",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#3f51b5",
+  "id": "my_fridge",
+  "lang": "en",
+  "orientation": "landscape"
 }
