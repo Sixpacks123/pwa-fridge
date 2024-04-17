@@ -15,11 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(permission === "granted" ? "Notification permission granted." : "Notification permission not granted.");
         });
     }
-    if ('periodicSync' in registration) {
-        setupPeriodicSync(registration);
-    } else {
-        console.log('Periodic Sync not supported');
-    }
 
     // Form Submission Handling
     const form = document.getElementById('productForm');
