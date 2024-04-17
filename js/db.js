@@ -91,3 +91,27 @@ function displayProductItem(table, name, expirationDate, now) {
     // Append row to the table
     table.appendChild(row);
 }
+
+async function checkForExpiringProducts() {
+    // Assuming openDatabase is a function that opens IndexedDB
+    const db = await openDatabase();
+    const now = new Date();
+    const tx = db.transaction('products', 'readonly');
+    const store = tx.objectStore('products');
+    const index = store.index('expirationDate');
+
+    return index.openCursor().then(function cursorIterate(cursor) {
+        if (!cursor) return;
+        const { name, expirationDate } = cursor.value;
+        const expDate = new Date(expirationDate);
+        const daysToExpire = (expDate - now) / (1000 * 3600 * 24);
+
+        if (daysToExpire < 1) {
+            self.registration.showNotification("Product Expiring Soon", {
+                body: `${name} expires within 24 hours.`,
+                icon: '/icons/frigo-64.png'
+            });
+        }
+        return cursor.continue().then(cursorIterate);
+    });
+}
