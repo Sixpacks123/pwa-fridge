@@ -57,6 +57,29 @@ self.addEventListener('periodicsync', event => {
     }
 });
 
+
+self.addEventListener('push', event => {
+    const data = event.data.json(); // Expecting data to be JSON
+    console.log('[SW] Push Received.');
+    console.log(`[SW] Push had this data: "${data.body}"`);
+
+    const title = data.title || 'Push';
+    const options = {
+        body: data.body,
+        icon: 'icons/icon-192x192.png',
+        badge: 'icons/badge.png'
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', event => {
+    console.log('[SW] Notification click Received.');
+
+    event.notification.close();
+
+});
+
 async function checkForExpiringProducts() {
     // Assuming openDatabase is a function that opens IndexedDB
     const db = await openDatabase();
