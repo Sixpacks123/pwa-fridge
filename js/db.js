@@ -76,11 +76,9 @@ function displayProductItem(table, name, expirationDate, now) {
     if (daysToExpire < 0) {
         statusCell.textContent = "Expired";
         statusCell.style.color = 'red';
-        notifyUser(`${name} has expired!`);
     } else if (daysToExpire <= 3) {
         statusCell.textContent = "Expiring Soon";
         statusCell.style.color = 'orange';
-        notifyUser(`${name} will expire soon!`);
     } else {
         statusCell.textContent = "Valid";
     }
