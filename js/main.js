@@ -16,18 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     if ('periodicSync' in registration) {
-        try {
-            await registration.periodicSync.register('check-expiration', {
-                minInterval: 60 * 1000, // 1 minute minimum interval
-            });
-            console.log('Periodic Sync registered for product expiration checks');
-        } catch (error) {
-            console.error('Periodic Sync could not be registered!', error);
-            // You might want to implement fallback synchronization logic here
-        }
+        setupPeriodicSync(registration);
     } else {
-        console.log('Periodic Sync not supported by the browser.');
-        // Implement alternative sync logic here, e.g., manual sync triggered by user action
+        console.log('Periodic Sync not supported');
     }
 
     // Form Submission Handling
@@ -45,6 +36,21 @@ async function addProduct(name, date) {
     if (typeof addProductToDB === 'function') {
         await addProductToDB(name, date);
         console.log('Product added to local database');
+    }
+}
+
+async function setupPeriodicSync(registration) {
+    try {
+        // Register periodic sync without checking permissions explicitly.
+        // Browsers that support periodic sync should manage permissions internally.
+        await registration.periodicSync.register('check-expiration', {
+            minInterval: 24 * 60 * 60 * 1000 // 24 hours
+        });
+        console.log('Periodic Sync registered');
+    } catch (error) {
+        console.error('Failed to register periodic sync:', error);
+        // If registration fails, it might be due to lack of support or permissions.
+        // Handle accordingly, perhaps by providing a fallback or a user notification.
     }
 }
 

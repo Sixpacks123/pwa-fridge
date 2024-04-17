@@ -49,10 +49,13 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener('periodicsync', event => {
     if (event.tag === 'check-expiration') {
-        console.log("[SW] Periodic Sync for Expiration Checks");
-        event.waitUntil(checkForExpiringProducts());
+        console.log("[SW] Periodic sync event fired for checking expirations.");
+        event.waitUntil(
+            checkForExpiringProducts()
+        );
     }
 });
+
 
 self.addEventListener('push', event => {
     const data = event.data.json();
