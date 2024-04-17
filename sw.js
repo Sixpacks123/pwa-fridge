@@ -43,6 +43,14 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
+
+if (periodicSyncPermission.state == 'granted') {
+    await registration.periodicSync.register('check-expiration', {
+        minInterval: 24 * 60 * 60 * 1000
+    });
+}
+
+
 self.addEventListener('periodicsync', event => {
     if (event.tag === 'check-expiration') {
         event.waitUntil(checkForExpiringProducts());
