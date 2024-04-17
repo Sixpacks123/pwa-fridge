@@ -45,7 +45,7 @@ self.addEventListener("fetch", (event) => {
 
 
 if (periodicSyncPermission.state == 'granted') {
-    await registration.periodicSync.register('check-expiration', {
+     registration.periodicSync.register('check-expiration', {
         minInterval: 24 * 60 * 60 * 1000
     });
 }
