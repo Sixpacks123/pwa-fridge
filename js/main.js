@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function addProduct(name, date) {
     addProductToDB(name, date).then(() => {
         console.log('Product added to local database');
-        notifyUser(`${name} will be synced and checked for expiration.`);
     });
 }
 
