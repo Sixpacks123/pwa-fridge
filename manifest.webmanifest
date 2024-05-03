@@ -20,5 +20,7 @@
   "theme_color": "#3f51b5",
   "id": "my_fridge",
   "lang": "en",
-  "orientation": "landscape"
+  "orientation": "landscape",
+  "dir": "ltr",
+  "scope": "https://sixpacks123.github.io/pwa-fridge/"
 }
