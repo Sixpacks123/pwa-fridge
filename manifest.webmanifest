@@ -22,5 +22,8 @@
   "lang": "en",
   "orientation": "landscape",
   "dir": "ltr",
-  "scope": "https://sixpacks123.github.io/pwa-fridge/"
+  "scope": "https://sixpacks123.github.io/pwa-fridge/",
+  "edge_side_panel": {
+    "preferred_width": 500
+  }
 }
